@@ -24,7 +24,7 @@ pub fn part1() {
         .iter()
         .map(|&b| if b > readings.len() - b { b'1' } else { b'0' })
         .collect();
-    // We can also do:
+    // We can also do something like:
     // epsilon = ((1 << Num_bits) - 1) ^ gamma
     let epsilon: Vec<u8> = freqs
         .iter()
