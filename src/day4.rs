@@ -2,6 +2,12 @@ use regex::Regex;
 use std::collections::HashSet;
 use std::fs;
 
+// Implemented a different technique compared to my clojure solution.
+//
+// 1. Determined the number each board won with
+// 2. Generated a tuple (index of the number, score) for each board
+// 3. Sorted the tuples
+
 pub fn winners() {
     let input: String = fs::read_to_string("data/day4.txt").unwrap();
     let (first_line, other_lines) = input.split_once("\n").unwrap();
@@ -11,6 +17,9 @@ pub fn winners() {
         .map(|x| x[0].parse().unwrap())
         .collect();
 
+    // In retrospect the following is kinda silly, I don't need to
+    // generate 10 sets.  Rather I can simply bruteforce check each of
+    // the 10 possible winning combinations using a .all
     let boards: Vec<_> = re
         .captures_iter(other_lines)
         .map(|x| x[0].parse().unwrap())
@@ -36,7 +45,7 @@ pub fn winners() {
     for b in &boards {
         let mut drawn = HashSet::new();
         for x in 0..4 {
-            // Add 4
+            // Cannot win with only 4 numbers
             drawn.insert(draws[x]);
         }
         for d in 4..draws.len() {
