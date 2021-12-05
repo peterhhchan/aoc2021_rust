@@ -44,24 +44,28 @@ pub fn winners() {
     let mut results = Vec::new();
     for b in &boards {
         let mut drawn = HashSet::new();
-        for x in 0..4 {
+        for &x in draws.iter().take(4) {
             // Cannot win with only 4 numbers
-            drawn.insert(draws[x]);
+            drawn.insert(x);
         }
-        for d in 4..draws.len() {
-            drawn.insert(draws[d]);
+        for (idx, &n) in draws.iter().enumerate().skip(4) {
+            drawn.insert(n);
             if b.iter()
-                .any(|row_or_column| row_or_column.intersection(&drawn).count() == 5)
+                .any(|row_or_column| row_or_column.is_subset(&drawn))
             {
-                let all_numbers =
-                    b.iter()
-                        .fold(HashSet::new(), |mut nums: HashSet<i32>, row_or_column| {
-                            nums.extend(row_or_column);
-                            nums
-                        });
-                let sum: i32 = all_numbers.difference(&drawn).into_iter().sum();
-                let score: i32 = draws[d] * sum;
-                results.push((d, score));
+                let sum: i32 = b
+                    .iter()
+                    .fold(HashSet::new(), |mut nums: HashSet<i32>, row_or_column| {
+                        nums.extend(row_or_column);
+                        nums
+                    })
+                    .difference(&drawn)
+                    .into_iter()
+                    .sum();
+
+                let score: i32 = n * sum;
+
+                results.push((idx, score));
                 break;
             }
         }
