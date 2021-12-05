@@ -1,5 +1,6 @@
-mod day4;
+mod day5;
 
 fn main() {
-    day4::winners();
+    day5::part1();
+    day5::part2();
 }
