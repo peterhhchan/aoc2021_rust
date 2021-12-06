@@ -2,7 +2,7 @@ use regex::Regex;
 use std::collections::HashMap;
 use std::fs;
 
-pub fn overlaps(ignore_diagonals: bool) {
+pub fn overlaps(ignore_diagonals: bool) -> usize {
     let mut points = HashMap::new();
 
     let re = Regex::new(r"\d+").unwrap();
@@ -30,8 +30,8 @@ pub fn overlaps(ignore_diagonals: bool) {
     });
 
     let overlaps = points.iter().filter(|&(_k, v)| *v > 1).count();
-
-    println!("{:?}", overlaps)
+    println!("{:?}", overlaps);
+    overlaps
 }
 
 pub fn part1() {

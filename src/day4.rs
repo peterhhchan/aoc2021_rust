@@ -44,11 +44,12 @@ pub fn winners() {
     let mut results = Vec::new();
     for b in &boards {
         let mut drawn = HashSet::new();
-        for &x in draws.iter().take(4) {
+        let skip: usize = 4;
+        for &x in draws.iter().take(skip) {
             // Cannot win with only 4 numbers
             drawn.insert(x);
         }
-        for (idx, &n) in draws.iter().enumerate().skip(4) {
+        for (idx, &n) in draws.iter().enumerate().skip(skip) {
             drawn.insert(n);
             if b.iter()
                 .any(|row_or_column| row_or_column.is_subset(&drawn))
