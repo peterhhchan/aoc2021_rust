@@ -11,18 +11,10 @@ pub fn count_fish(days: usize) -> usize {
         .map(|d| d[0].parse().unwrap())
         .collect();
 
-    let freqs = fish.iter().fold(HashMap::new(), |mut map, f| {
-        map.entry(f).and_modify(|count| *count += 1).or_insert(1);
-        map
+    let mut counts = fish.iter().fold(vec![0; 9], |mut counts, &f| {
+        counts[f] += 1;
+        counts
     });
-
-    let mut counts = vec![0; 9];
-    for (idx, item) in counts.iter_mut().enumerate() {
-        *item = match freqs.get(&idx) {
-            Some(&f) => f,
-            None => 0,
-        };
-    }
 
     for _ in 0..days {
         let births = counts[0];
@@ -34,9 +26,9 @@ pub fn count_fish(days: usize) -> usize {
 }
 
 pub fn part1() {
-    println!("{}", count_fish(80));
+    println!("{}", count_fish(80)); //387413
 }
 
 pub fn part2() {
-    println!("{}", count_fish(256));
+    println!("{}", count_fish(256)); //1738377086345
 }
