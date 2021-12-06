@@ -47,6 +47,7 @@ pub fn winners() {
         let skip: usize = 4;
         for &x in draws.iter().take(skip) {
             // Cannot win with only 4 numbers
+            // I can combine the two loops.
             drawn.insert(x);
         }
         for (idx, &n) in draws.iter().enumerate().skip(skip) {

@@ -1,21 +1,17 @@
 use std::fs;
 
-pub fn part1() -> usize {
+pub fn readings(window: usize) {
     let readings = fs::read_to_string("data/day1.txt").unwrap();
-
     let r: Vec<i32> = readings.lines().map(|s| s.parse().unwrap()).collect();
-    let count = r.windows(2).filter(|&w| w[0] < w[1]).count();
+    let count = r.windows(1 + window).filter(|&w| w[0] < w[window]).count();
 
     println! {"{}", count};
-    count
 }
 
-pub fn part2() -> usize {
-    let readings = fs::read_to_string("data/day1.txt").unwrap();
+pub fn part1() {
+    readings(1); // 1184
+}
 
-    let r: Vec<i32> = readings.lines().map(|s| s.parse().unwrap()).collect();
-    let count = r.windows(4).filter(|&w| w[0] < w[3]).count();
-
-    println! {"{}", count};
-    count
+pub fn part2() {
+    readings(3); // 1158
 }

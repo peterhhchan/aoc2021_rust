@@ -1,12 +1,11 @@
 use regex::Regex;
-use std::collections::HashMap;
 use std::fs;
 
 pub fn count_fish(days: usize) -> usize {
     let input = fs::read_to_string("data/day6.txt").unwrap();
-    let re = Regex::new(r"\d+").unwrap();
 
-    let fish: Vec<usize> = re
+    let fish: Vec<usize> = Regex::new(r"\d+")
+        .unwrap()
         .captures_iter(&input)
         .map(|d| d[0].parse().unwrap())
         .collect();
