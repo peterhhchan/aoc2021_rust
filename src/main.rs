@@ -7,7 +7,8 @@ use std::time::Instant;
 //mod day6;
 //mod day8;
 //mod day9;
-mod day25;
+mod day22;
+//mod day25;
 
 fn main() {
     let start = Instant::now();
@@ -27,7 +28,9 @@ fn main() {
     //day9::part1();
     //day9::part2();
 
-    day25::part1();
+    day22::part1();
+
+    // day25::part1();
 
     let elapsed = start.elapsed();
     println!("Elapsed: {:.2?}", elapsed);
