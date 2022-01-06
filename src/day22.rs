@@ -1,24 +1,41 @@
 use regex::Regex;
-use std::cmp;
 use std::convert::TryInto;
 use std::fs;
+
+// --- Day 22: Reactor Reboot ---
+
+// Approach using positive and negative spaces.  Performance is a bit
+// disappointing as the number of cubes becomes very large.
 
 fn into_array(cube: &[i64]) -> [i64; 6] {
     cube.try_into().expect("")
 }
 
 fn overlap(start1: i64, end1: i64, start2: i64, end2: i64) -> (i64, i64) {
-    (cmp::max(start1, start2), cmp::min(end1, end2))
+    (start1.max(start2), end1.min(end2))
 }
 
-pub fn sum(cubes: &Vec<[i64; 6]>) -> i64 {
-    //println!("Cubes: {:?}", cubes);
+fn sum(cubes: &[[i64; 6]]) -> i64 {
     cubes.iter().fold(0, |sum, cube| {
         sum + (1 + cube[1] - cube[0]) * (1 + cube[3] - cube[2]) * (1 + cube[5] - cube[4])
     })
 }
 
-pub fn part1() {
+fn intersections(cubes: &[[i64; 6]], cube: &[i64]) -> Vec<[i64; 6]> {
+    cubes
+        .iter()
+        .fold(Vec::new(), |mut intersect, c2: &[i64; 6]| {
+            let (a, b) = overlap(cube[0], cube[1], c2[0], c2[1]);
+            let (c, d) = overlap(cube[2], cube[3], c2[2], c2[3]);
+            let (e, f) = overlap(cube[4], cube[5], c2[4], c2[5]);
+            if b >= a && d >= c && f >= e {
+                intersect.push([a, b, c, d, e, f]);
+            }
+            intersect
+        })
+}
+
+pub fn reactor(n: usize) {
     let re = Regex::new(r"-*\d+").unwrap();
     let commands = fs::read_to_string("data/day22.txt").unwrap();
     let commands: Vec<(bool, Vec<i64>)> = commands
@@ -32,37 +49,31 @@ pub fn part1() {
 
     let mut on: Vec<[i64; 6]> = Vec::new();
     let mut off: Vec<[i64; 6]> = Vec::new();
-    commands.iter().take(20).for_each(|(is_on, cube)| {
-        let mut off_additions = Vec::new();
-        let mut on_additions = Vec::new();
+    commands.iter().take(n).for_each(|(is_on, cube)| {
+        let off_additions = intersections(&on, cube);
+        let on_additions = intersections(&off, cube);
 
-        on.iter().for_each(|c2: &[i64; 6]| {
-            let (a, b) = overlap(cube[0], cube[1], c2[0], c2[1]);
-            let (c, d) = overlap(cube[2], cube[3], c2[2], c2[3]);
-            let (e, f) = overlap(cube[4], cube[5], c2[4], c2[5]);
-            if b >= a && d >= c && f >= e {
-                off_additions.push([a, b, c, d, e, f]);
-            }
-        });
+        on.extend(&on_additions);
+        off.extend(&off_additions);
 
-        off.iter().for_each(|c2: &[i64; 6]| {
-            let (a, b) = overlap(cube[0], cube[1], c2[0], c2[1]);
-            let (c, d) = overlap(cube[2], cube[3], c2[2], c2[3]);
-            let (e, f) = overlap(cube[4], cube[5], c2[4], c2[5]);
-            if b >= a && d >= c && f >= e {
-                on_additions.push([a, b, c, d, e, f]);
-            }
-        });
-
-        on.append(&mut on_additions);
-        off.append(&mut off_additions);
         if *is_on {
             on.push(into_array(&cube[..]));
         }
     });
 
     let total_on = sum(&on) - sum(&off);
-    //  println!("{:?}", on);
-    //  println!("{:?}", off);
+    println!("{:?}", on.len());
+    println!("{:?}", off.len());
+
     println!("{:?}", total_on);
+}
+
+// 4 ms - 606484
+pub fn part1() {
+    reactor(20);
+}
+
+// 110 ms - 1162571910364852
+pub fn part2() {
+    reactor(1000);
 }
